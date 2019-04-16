@@ -42,7 +42,7 @@ Les données concernant les musées sont accessibles via l'API Rest suivante :
 
 -   Liste des photos d'un musée : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b/pictures>
 
--   Télécharger une photos : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b/pictures/2.jpeg>
+-   Télécharger une photo : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b/pictures/2.jpeg>
 
 ## Contraintes
 
