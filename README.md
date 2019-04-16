@@ -6,6 +6,8 @@ Projet 4A EPF Android
 - Scanner 
 - Musées (déjà scannés)
 
+# Help
+<https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android>
 
 # Todo
 - [ ] Scanner un QRCode et visualiser une fiche desciptive du musée correspondant,
