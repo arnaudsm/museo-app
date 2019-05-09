@@ -10,12 +10,23 @@ Projet 4A EPF Android
 <https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android>
 
 # Todo
-- [ ] Scanner un QRCode et visualiser une fiche desciptive du musée correspondant,
-- [ ] Visualiser les photos associées à un musée,
+- [x] Scanner un QR Code
+- [x] Vérifier si un QR Code est valide
+- [ ] Vérifier si un musée est téléchargé 
+- [ ] Télécharger un musée en local
+- [ ] Afficher un musée
+- [ ] Télécharger et visualiser les photos associées à un musée
 - [ ] Ajouter des photos à la fiche d’un musée,
-- [ ] Garder sur le téléphone les données des musées déjà scannés,
-- [ ] Visualiser les musées déjà scannés sans avoir une connexion à Internet.
+- [ ] Lister les musées téléchagés dans l'onglet principal
 - [ ] Documentation utilisateur
+
+# Example QR Codes
+![Code Invalide](/demo/qr_arnaud.png)
+Code Invalide
+
+![Code Valide](/demo/qr_musee.png)
+Code Valide
+
 
 # Authors
 - [Arnaud de Saint Meloir](https://arnaud.at/) 
