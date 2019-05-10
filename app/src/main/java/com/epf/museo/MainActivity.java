@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                     mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_camera:
-                    mTextMessage.setText(R.string.title_scan);
+                    mTextMessage.setText("Scan");
 
                     launchActivity(ScannerActivity.class);
                     return true;

@@ -64,7 +64,10 @@ public class ScannerActivity  extends Activity implements ZXingScannerView.Resul
             Toast.makeText(getApplicationContext(),"Valid Code:"+result, Toast.LENGTH_SHORT).show();
             finish();
             Intent MuseeActivity = new Intent(ScannerActivity.this, MuseeActivity.class);
+            getIntent().putExtra("result",result);
             startActivity(MuseeActivity);
+
+
         } else {
 
             Toast.makeText(getApplicationContext(),"Invalid QR Code:"+result, Toast.LENGTH_SHORT).show();
