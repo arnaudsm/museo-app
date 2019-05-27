@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-public class ScannerActivity  extends Activity implements ZXingScannerView.ResultHandler {
+public class ScannerActivity  extends Activity implements ZXingScannerView {
     private ZXingScannerView mScannerView;
 
     @Override
@@ -77,6 +75,11 @@ public class ScannerActivity  extends Activity implements ZXingScannerView.Resul
     }
     private boolean validID(String id) {
         return (id.matches("[a-z0-9]*") && id.length() == 40);
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }
