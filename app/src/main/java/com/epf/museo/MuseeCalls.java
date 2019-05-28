@@ -1,6 +1,9 @@
 package com.epf.museo;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -9,7 +12,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MuseeCalls {
+public class MuseeCalls extends AppCompatActivity {
+
+        Intent intent = getIntent();
+        String id = intent.getStringExtra("url");
 
     //1 -  Interface de callback a été créée afin que le controleur puisse récupérer certains moments de l'exécution de la requete
     public interface Callbacks {
