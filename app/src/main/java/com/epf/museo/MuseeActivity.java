@@ -3,16 +3,12 @@ package com.epf.museo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.transform.Result;
-
-import retrofit.RestAdapter;
 
 public class MuseeActivity extends AppCompatActivity {
 
@@ -37,7 +33,7 @@ public class MuseeActivity extends AppCompatActivity {
             ProgressDialog loading = new ProgressDialog(MuseeActivity.this);
             loading.setMessage("Loading Museum");
             loading.show();
-            new ListReposTask().execute("5c637e3c61e55c808b31e1ae12a57fc5c4842b4b");
+//            new ListMuseeTask().execute("5c637e3c61e55c808b31e1ae12a57fc5c4842b4b");
             loading.cancel();
         }
 
@@ -49,15 +45,15 @@ public class MuseeActivity extends AppCompatActivity {
 
     }
 
-    public void afficherNombreMusee(List<Musee> musees){
-        Toast.makeText(this, "nombre de musées : "+musees.size(), Toast.LENGTH_SHORT).show();
-    }
-
-    Class ListMuseeTask extends AsyncTask<String, Void, List<Musee>>{
-
-    }
-    MuseeControllerService museeControllerService = new RestAdapter.Builder()
-            .setEndpoint(MuseeControllerService.ENDPOINT)
-            .build()
-            .create(MuseeControllerService.class);
+//    public void afficherNombreMusee(List<Musee> musees){
+//        Toast.makeText(this, "nombre de musées : "+musees.size(), Toast.LENGTH_SHORT).show();
+//    }
+//
+//    Class ListMuseeTask extends AsyncTask<String, Void, List<Musee>>{
+//
+//    }
+//    MuseeControllerService museeControllerService = new RestAdapter.Builder()
+//            .setEndpoint(MuseeControllerService.ENDPOINT)
+//            .build()
+//            .create(MuseeControllerService.class);
 }

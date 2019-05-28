@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class ScannerActivity  extends Activity implements ZXingScannerView {
+public class ScannerActivity  extends Activity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
     @Override
