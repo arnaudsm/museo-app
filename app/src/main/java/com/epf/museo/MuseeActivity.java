@@ -13,6 +13,7 @@ import java.util.List;
 public class MuseeActivity extends AppCompatActivity {
 
     ArrayList<String> urls;
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,10 @@ public class MuseeActivity extends AppCompatActivity {
             ProgressDialog loading = new ProgressDialog(MuseeActivity.this);
             loading.setMessage("Loading Museum");
             loading.show();
-//            new ListMuseeTask().execute("5c637e3c61e55c808b31e1ae12a57fc5c4842b4b");
+
+            // TODO : Charger le musée et le stocker dans l'apppli
+            // TODO Afficher les infos du musée
+            this.configureAndShowMainFragment();
             loading.cancel();
         }
 
@@ -45,15 +49,17 @@ public class MuseeActivity extends AppCompatActivity {
 
     }
 
-//    public void afficherNombreMusee(List<Musee> musees){
-//        Toast.makeText(this, "nombre de musées : "+musees.size(), Toast.LENGTH_SHORT).show();
-//    }
-//
-//    Class ListMuseeTask extends AsyncTask<String, Void, List<Musee>>{
-//
-//    }
-//    MuseeControllerService museeControllerService = new RestAdapter.Builder()
-//            .setEndpoint(MuseeControllerService.ENDPOINT)
-//            .build()
-//            .create(MuseeControllerService.class);
+    // CONFIGURATION
+
+    private void configureAndShowMainFragment(){
+
+        mainFragment = (MainFragment) getSupportFragmentManager().findFragmentById(R.id.activity_musee_frame_layout);
+
+        if (mainFragment == null) {
+            mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.activity_musee_frame_layout, mainFragment)
+                    .commit();
+        }
+    }
 }
