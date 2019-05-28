@@ -15,7 +15,7 @@ import retrofit2.Response;
 public class MuseeCalls extends AppCompatActivity {
 
         Intent intent = getIntent();
-        String id = intent.getStringExtra("url");
+        String id = intent.getStringExtra("museeId");
 
     //1 -  Interface de callback a été créée afin que le controleur puisse récupérer certains moments de l'exécution de la requete
     public interface Callbacks {
