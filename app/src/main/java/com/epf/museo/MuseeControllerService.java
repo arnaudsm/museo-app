@@ -12,13 +12,9 @@ public interface MuseeControllerService {
 
     //Musees Controller
     // indique à Retrofit que nous souhaitons effectuer une requete REST de type GET sur l'url:
-    @GET("/api/musees/{id}")
+    @GET("api/musees/{id}")
     // type retourné correspond au JSON désérialisé. Cette requête retourne une liste d'objet Musee.
-    Call<List<Musee>> getMusee(@Path("id") String id);
+    Call<Musee> getMusee(@Path("id") String id);
 
-    public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://vps449928.ovh.net")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
 }
 
