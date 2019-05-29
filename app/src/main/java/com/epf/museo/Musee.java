@@ -8,7 +8,7 @@ public class Musee {
     private String adresse;
     private String ville;
     private boolean ferme;
-    private String fermeture_annuielle;
+    private String fermeture_annuelle;
     private String site_web;
     private int cp;
     private String region;
@@ -62,12 +62,12 @@ public class Musee {
         this.ferme = ferme;
     }
 
-    public String getFermeture_annuielle() {
-        return fermeture_annuielle;
+    public String getFermeture_annuelle() {
+        return fermeture_annuelle;
     }
 
     public void setFermeture_annuielle(String fermeture_annuielle) {
-        this.fermeture_annuielle = fermeture_annuielle;
+        this.fermeture_annuelle = fermeture_annuielle;
     }
 
     public String getSite_web() {
