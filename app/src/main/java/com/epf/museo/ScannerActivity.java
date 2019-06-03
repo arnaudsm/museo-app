@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-public class ScannerActivity  extends Activity implements ZXingScannerView.ResultHandler {
+public class ScannerActivity extends Activity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
     @Override
@@ -53,29 +51,24 @@ public class ScannerActivity  extends Activity implements ZXingScannerView.Resul
 
     @Override
     public void handleResult(Result rawResult) {
-        // Do something with the result here
-
-
-
         String result = rawResult.getText();
-        Log.v("scan", String.valueOf(result.length()));
 
-        if(validID(result)) {
-            Toast.makeText(getApplicationContext(),"Valid Code:"+result, Toast.LENGTH_SHORT).show();
+        if (validID(result)) {
             finish();
             Intent MuseeActivity = new Intent(ScannerActivity.this, MuseeActivity.class);
+            MuseeActivity.putExtra("result", result);
             startActivity(MuseeActivity);
         } else {
-
-            Toast.makeText(getApplicationContext(),"Invalid QR Code:"+result, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Invalid QR Code:" + result, Toast.LENGTH_SHORT).show();
             mScannerView.resumeCameraPreview(this);
         }
 
     }
+
     private boolean validID(String id) {
         return (id.matches("[a-z0-9]*") && id.length() == 40);
-
     }
+
 }
 
 
