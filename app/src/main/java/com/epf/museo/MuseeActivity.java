@@ -1,18 +1,21 @@
 package com.epf.museo;
 
-import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,11 +23,21 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import com.epf.museo.database.MuseumDatabase;
+import com.epf.museo.database.database;
+import com.epf.museo.interfaces.ImageDownloader;
+import com.epf.museo.models.Musee;
+import com.epf.museo.models.MuseeImage;
+import com.squareup.picasso.Picasso;
+
 public class MuseeActivity extends AppCompatActivity {
 
     ArrayList<String> museeIds;
     private static final String TAG ="NomMusee";
     public static final String MUSEE_FILE= "monFichierMusee";
+    private static database database;
+    private static Musee musee;
+    private static ActionBar menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +47,49 @@ public class MuseeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String museeId = intent.getStringExtra("result");
 
-        //Toast.makeText(this, "L'id du musé téléchargé est : "+ id, Toast.LENGTH_SHORT).show();
+        // Action Bar
+        menu = getSupportActionBar();
+        menu.setDisplayShowHomeEnabled(true);
+        menu.setIcon(R.drawable.ic_museum_alone);
+        menu.setTitle("  ");
 
-        museeIds = new ArrayList<String>();
+        // BDD
+        MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
+                .allowMainThreadQueries()
+                .build();
+        database = databaseBuilder.getDatabase();
 
-        if(museeIds.contains(museeId)){
-            Toast.makeText(getApplicationContext(),"Ce musé a déjà été téléchargé", Toast.LENGTH_SHORT).show();
+        musee = database.getItemById(museeId);
+
+        if(musee != null){
+            afficherMusee();
         } else {
-            // TODO : charger le musée
-
-            Toast.makeText(getApplicationContext(),"Téléchargement du musée", Toast.LENGTH_SHORT).show();
-            ProgressDialog loading = new ProgressDialog(MuseeActivity.this);
-            loading.setMessage("Loading Museum");
-            loading.show();
-
             try {
                 chargerMusee(museeId);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                errorMusee();
             }
-
-            loading.cancel();
-
-            // TODO : Afficher les infos du musée
-
-            try {
-                getFromInterne();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
         }
+    }
+
+    public void errorMusee(){
+        Snackbar.make(findViewById(android.R.id.content), "Error Loading", Snackbar.LENGTH_LONG).show();
+        finish();
+    }
+
+    public void afficherMusee() {
+        Snackbar.make(findViewById(android.R.id.content), "Museum Loaded", Snackbar.LENGTH_LONG).show();
+
+        menu.setTitle(" "+musee.getNom());
+        findViewById(R.id.progress).setVisibility(TextView.INVISIBLE);
+        findViewById(R.id.progress_text).setVisibility(ProgressBar.INVISIBLE);
+
+        chargerPhotos();
+    }
+
+    public void saveMusee(){
+        database.insert(musee);
+        Snackbar.make(findViewById(android.R.id.content), "Museum Saved", Snackbar.LENGTH_LONG).show();
     }
 
     public void chargerMusee(String museeId) throws IOException {
@@ -86,83 +110,75 @@ public class MuseeActivity extends AppCompatActivity {
         call.enqueue(new Callback<Musee>() {
             @Override
             public void onResponse(Call<Musee> call, Response<Musee> response) {
-                //2.5 - On appel les méthodes de Callback au bon moment
-
-                Musee musee = response.body();
-                Log.d(TAG, musee.getNom());
-                Toast.makeText(MuseeActivity.this, "API response OK", Toast.LENGTH_SHORT).show();
-
-                // TODO: stocker le musée dans un fichier
+                musee = response.body();
 
                 try {
-                    saveInterne(musee);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    afficherMusee();
+                    saveMusee();
+                }  catch (Exception e) {
+                    errorMusee();
                 }
-
             }
-
             @Override
             public void onFailure(Call<Musee> call, Throwable t) {
-                //2.5 - On appel les méthodes de Callback au bon moment
-                Toast.makeText(MuseeActivity.this, "L'API response Failed", Toast.LENGTH_SHORT).show();
+                errorMusee();
             }
         });
     }
 
-    private void saveInterne(Musee musee) throws IOException {
 
-//        SharedPreferences preferences = getSharedPreferences(FICHIER_MUSEE, MODE_PRIVATE);
-//        SharedPreferences.Editor editor = preferences.edit();
-//        editor.putString("nomMusee", musee.getNom());
-//        editor.commit();
+    private void chargerPhotos(){
+        final String museeId = musee.getId();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://vps449928.ovh.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-        // creation du fichier
-        FileOutputStream outputStream = openFileOutput(MUSEE_FILE, MODE_PRIVATE);
+        //2 - Récupérer une instance de Retrofit et récupération de la liste des endpoints de l'interface MuseeControllerService
+        MuseeControllerService museeControllerService = retrofit.create(MuseeControllerService.class);
 
-        String id = musee.getId();
-        String nom =  musee.getNom();
-        String periode_ouverture = musee.getPeriode_ouverture();
-        String adresse = musee.getAdresse();
-        String ville = musee.getVille();
-        boolean ferme = musee.isFerme();
-        String fermeture_annuelle = musee.getFermeture_annuelle();
-        String site_web = musee.getSite_web();
-        String cp = Integer.toString(musee.getCp());
-        String region = musee.getRegion();
-        String dept = musee.getDept();
+        //3 - Création de l'appel Call de notre EndPoint getMusee
+        Call<List<String>> call = museeControllerService.getMuseePics(museeId);
 
-        // ecriture
+        //4 - Démarrage de l'appel
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                List<String> museePics = response.body();
+                for(String pic : museePics){
+                    load_picture(pic, museeId);
+                }
 
-        outputStream.write(id.getBytes());
-        outputStream.write(nom.getBytes());
-        outputStream.write(periode_ouverture.getBytes());
-        outputStream.write(adresse.getBytes());
-        outputStream.write(ville.getBytes());
-        outputStream.write((ferme ? 1 : 0));
-        outputStream.write(fermeture_annuelle.getBytes());
-        outputStream.write(site_web.getBytes());
-        outputStream.write(cp.getBytes());
-        outputStream.write(region.getBytes());
-        outputStream.write(dept.getBytes());
+            }
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
 
-        outputStream.close();
-
+            }
+        });
     }
 
-    private String getFromInterne() throws IOException {
+    public void load_picture(String src, String museum_id) {
+        try {
+            URL url = new URL(src);
+            MuseeImage museeImage = database.getImage(src);
 
-        String value = null;
-
-        FileInputStream inputStream = openFileInput(MUSEE_FILE);
-        StringBuilder stringBuilder = new StringBuilder();
-        int content;
-        while((content=inputStream.read())!=-1){
-            value = String.valueOf(stringBuilder.append((char)content));
+            if (museeImage != null) {
+                Log.e("Good", "image exists");
+                display_picture(museeImage);
+            } else {
+                Picasso.get()
+                        .load(src)
+                        .into(new ImageDownloader(src, museum_id, database));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        return value;
     }
+
+    public void display_picture(MuseeImage picture){
+        Bitmap bitmap = picture.getImage();
+        Log.e("Good", "Image Loaded");
+    }
+
+
 }

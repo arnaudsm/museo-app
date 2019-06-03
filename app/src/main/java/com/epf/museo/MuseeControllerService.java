@@ -1,10 +1,10 @@
 package com.epf.museo;
 
+import com.epf.museo.models.Musee;
+
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -15,6 +15,11 @@ public interface MuseeControllerService {
     @GET("api/musees/{id}")
     // type retourné correspond au JSON désérialisé. Cette requête retourne une liste d'objet Musee.
     Call<Musee> getMusee(@Path("id") String id);
+
+    @GET("api/musees/{id}/pictures")
+    Call<List<String>> getMuseePics(@Path("id") String id);
+
+
 
 }
 

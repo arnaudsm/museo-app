@@ -1,7 +1,12 @@
-package com.epf.museo;
+package com.epf.museo.models;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+@Entity(tableName = "musees")
 public class Musee {
-
+    @PrimaryKey
+    @NonNull
     private String id;
     private String nom;
     private String periode_ouverture;
@@ -13,6 +18,20 @@ public class Musee {
     private int cp;
     private String region;
     private String dept;
+
+    public Musee(String id, String nom, String periode_ouverture, String adresse, String ville, boolean ferme, String fermeture_annuelle, String site_web, int cp, String region, String dept) {
+        this.id = id;
+        this.nom = nom;
+        this.periode_ouverture = periode_ouverture;
+        this.adresse = adresse;
+        this.ville = ville;
+        this.ferme = ferme;
+        this.fermeture_annuelle = fermeture_annuelle;
+        this.site_web = site_web;
+        this.cp = cp;
+        this.region = region;
+        this.dept = dept;
+    }
 
     public String getId() {
         return id;

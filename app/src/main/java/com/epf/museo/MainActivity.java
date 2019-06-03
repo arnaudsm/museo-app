@@ -1,42 +1,43 @@
 package com.epf.museo;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.Manifest;
 import android.widget.Toast;
 
+import com.epf.museo.database.MuseumDatabase;
+import com.epf.museo.interfaces.ImageDownloader;
+import com.epf.museo.models.Musee;
+import com.epf.museo.models.MuseeImage;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import java.net.URL;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
     private Class<?> mClss;
+    private static com.epf.museo.database.database database;
+    private List<Musee> musees;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_camera:
-                    mTextMessage.setText("Scan");
-
-                    launchActivity(ScannerActivity.class);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -71,9 +72,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        // Action Bar
+        ActionBar menu = getSupportActionBar();
+        menu.setDisplayShowHomeEnabled(true);
+        menu.setIcon(R.drawable.ic_museum_alone);
+        menu.setTitle("  " + getResources().getString(R.string.app_name));
+
+
+
+        FloatingActionButton fab = findViewById(R.id.scan_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity(ScannerActivity.class);
+            }
+        });
+
+        // BDD
+        MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
+        database = databaseBuilder.getDatabase();
+        update_list();
+    }
+
+    protected void update_list(){
+        musees = database.getItems();
+        TextView text_empty = (TextView) findViewById(R.id.text_empty);
+        if(musees.size() == 0) {
+            text_empty.setVisibility(View.VISIBLE);
+        } else {
+            text_empty.setVisibility(View.VISIBLE);
+            text_empty.setText(musees.size()+" Museums already scanned");
+        }
     }
 
 }
