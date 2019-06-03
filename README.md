@@ -12,8 +12,8 @@ Projet 4A EPF Android
 # Todo
 - [x] Scanner un QR Code
 - [x] Vérifier si un QR Code est valide
-- [ ] Vérifier si un musée est téléchargé 
-- [ ] Télécharger un musée en local
+- [x] Vérifier si un musée est téléchargé
+- [x] Télécharger un musée en local
 - [ ] Afficher un musée
 - [ ] Télécharger et visualiser les photos associées à un musée
 - [ ] Ajouter des photos à la fiche d’un musée,
