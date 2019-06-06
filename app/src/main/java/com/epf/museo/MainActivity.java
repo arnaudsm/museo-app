@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.Manifest;
 import android.widget.Toast;
@@ -32,12 +33,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     private Class<?> mClss;
     private static com.epf.museo.database.database database;
     private List<Musee> musees;
-
 
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -72,21 +72,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // create views
+        FloatingActionButton fabscan = findViewById(R.id.scan_button);
+        Button listmuseebutton = findViewById(R.id.afficher_list_musee_button);
+
+        // now set the View with OnClickListener
+
+        fabscan.setOnClickListener(new Clik());
+        listmuseebutton.setOnClickListener(new Clik());
+
+
+
         // Action Bar
         ActionBar menu = getSupportActionBar();
         menu.setDisplayShowHomeEnabled(true);
         menu.setIcon(R.drawable.ic_museum_alone);
         menu.setTitle("  " + getResources().getString(R.string.app_name));
-
-
-
-        FloatingActionButton fab = findViewById(R.id.scan_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchActivity(ScannerActivity.class);
-            }
-        });
 
         // BDD
         MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
@@ -108,4 +109,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public class Clik implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+
+            switch (v.getId()) {
+                case R.id.afficher_list_musee_button:
+                    Toast.makeText(getApplicationContext(), "Ouverture de la liste des musées", Toast.LENGTH_LONG).show();
+                    launchActivity(ListMuseeActivity.class);
+                    break;
+
+                case R.id.scan_button:
+                    Toast.makeText(getApplicationContext(), "Ouverture du scanner", Toast.LENGTH_LONG).show();
+                    launchActivity(ScannerActivity.class);
+                    break;
+                default:
+            }
+        }
+    }
 }

@@ -111,7 +111,7 @@ public class MuseeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Musee> call, Response<Musee> response) {
                 musee = response.body();
-
+                response.body().getNom();
                 try {
                     afficherMusee();
                     saveMusee();
