@@ -33,12 +33,17 @@ public class ListMuseeActivity extends AppCompatActivity {
     }
 
     private void initData() {
+
+        listData.add(new Data(R.drawable.ic_museum, "musee"));
         listData.add(new Data(R.drawable.barcares_2017, "Barcares 2017"));
-        listData.add(new Data(R.drawable.before_gala_epf_2017, "Before Gala EPF 2017"));
-        listData.add(new Data(R.drawable.chalet_quebec_aout_2018,"Chalet Quebec Aout 2018"));
+/*        listData.add(new Data(R.drawable.before_gala_epf_2017, "Before Gala EPF 2017"));
+        listData.add(new Data(R.drawable.chalet_quebec_aout_2018,"Chalet Quebec Aout 2018"));*/
         // copy again
+
+        listData.add(new Data(R.drawable.ic_museum, "musee"));
+
         listData.add(new Data(R.drawable.barcares_2017, "Barcares 2017"));
-        listData.add(new Data(R.drawable.before_gala_epf_2017, "Before Gala EPF 2017"));
-        listData.add(new Data(R.drawable.chalet_quebec_aout_2018,"Chalet Quebec Aout 2018"));
+/*        listData.add(new Data(R.drawable.before_gala_epf_2017, "Before Gala EPF 2017"));
+        listData.add(new Data(R.drawable.chalet_quebec_aout_2018,"Chalet Quebec Aout 2018"));*/
     }
 }

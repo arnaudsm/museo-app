@@ -10,7 +10,7 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:background="@drawable/barcares_2017"
+            android:background="@drawable/ic_museum"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_weight="1"
