@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity{
 
         // now set the View with OnClickListener
 
-        fabscan.setOnClickListener(new Clik());
-        listmuseebutton.setOnClickListener(new Clik());
+        fabscan.setOnClickListener(new ClikMainActivity());
+        listmuseebutton.setOnClickListener(new ClikMainActivity());
 
 
 
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public class Clik implements View.OnClickListener {
+    public class ClikMainActivity implements View.OnClickListener {
         @Override
         public void onClick(View v) {
 
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity{
                     Toast.makeText(getApplicationContext(), "Ouverture du scanner", Toast.LENGTH_LONG).show();
                     launchActivity(ScannerActivity.class);
                     break;
+
                 default:
             }
         }

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.epf.museo.models.Musee;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder {
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
     private List<Data> listData = new ArrayList<Data>();
+
 
     public RecyclerViewAdapter(List<Data> listData) {
         this.listData = listData;
