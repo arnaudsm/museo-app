@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,22 +32,24 @@ public class ListMuseeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_musee);
-        
+
         initData();
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter =  new RecyclerViewAdapter(listData);
+        adapter = new RecyclerViewAdapter(listData);
         recyclerView.setAdapter(adapter);
 
         // create views
-        ImageView imgViewMusee = findViewById(R.id.imageView);
+        LinearLayout listMuseeLayout = findViewById(R.id.list_musee_layout);
+        //TextView txtViewNomMusee = findViewById(R.id.txtDescription);
+        //ImageView imgViewMusee = findViewById(R.id.imageView);
 
         // set the view OnClickListener
-        imgViewMusee.setOnClickListener(new ClikListMuseeActivity());
-
-
+        listMuseeLayout.setOnClickListener(new ClikListMuseeActivity());
+        //txtViewNomMusee.setOnClickListener(new ClikListMuseeActivity());
+        //imgViewMusee.setOnClickListener(new ClikListMuseeActivity());
 
 
     }
@@ -65,11 +69,11 @@ public class ListMuseeActivity extends AppCompatActivity {
         //listData.add(new Data(R.drawable.chalet_quebec_aout_2018,"Chalet Quebec Aout 2018"));
     }
 
-    public class ClikListMuseeActivity implements View.OnClickListener{
+    public class ClikListMuseeActivity implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            v.findViewById(R.id.imageView);
+            v.findViewById(R.id.list_musee_layout);
             Toast.makeText(getApplicationContext(), "Ouverture des infos du Musee", Toast.LENGTH_SHORT).show();
             launchActivity(MuseeActivity.class);
         }

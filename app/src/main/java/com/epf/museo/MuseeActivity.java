@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class MuseeActivity extends AppCompatActivity {
     public static final String MUSEE_FILE= "monFichierMusee";
     private static database database;
     private static Musee musee;
+    private static MuseeImage museeImg;
     private static ActionBar menu;
 
     @Override
@@ -61,11 +63,14 @@ public class MuseeActivity extends AppCompatActivity {
 
         musee = database.getItemById(museeId);
 
+        //museeImg = database.getMuseumImages(museeId);
+
         if(musee != null){
             afficherMusee();
         } else {
             try {
                 chargerMusee(museeId);
+                chargerPhotos();
             } catch (Exception e) {
                 errorMusee();
             }
@@ -81,10 +86,27 @@ public class MuseeActivity extends AppCompatActivity {
         Snackbar.make(findViewById(android.R.id.content), "Museum Loaded", Snackbar.LENGTH_LONG).show();
 
         menu.setTitle(" "+musee.getNom());
+
         findViewById(R.id.progress).setVisibility(TextView.INVISIBLE);
         findViewById(R.id.progress_text).setVisibility(ProgressBar.INVISIBLE);
 
-        chargerPhotos();
+        TextView txtViewInfoMusee = findViewById(R.id.info_musee);
+        ImageView imgViewMusee = findViewById(R.id.image_musee);
+
+        // afficher les infos dans TextView
+        txtViewInfoMusee.setText(musee.getAdresse());
+        txtViewInfoMusee.setText(musee.getVille());
+        txtViewInfoMusee.setText(musee.getCp());
+        txtViewInfoMusee.setText(musee.getDept());
+        txtViewInfoMusee.setText(musee.getRegion());
+        txtViewInfoMusee.setText(musee.getPeriode_ouverture());
+        txtViewInfoMusee.setText(musee.getFermeture_annuelle());
+        txtViewInfoMusee.setText(musee.getSite_web());
+
+        // afficher la photo dans ImageView
+        // imgViewMusee.setImageResource(museeImg.getImage().getByteCount());
+
+
     }
 
     public void saveMusee(){
