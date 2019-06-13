@@ -73,7 +73,7 @@ public class MuseeActivity extends AppCompatActivity {
     }
 
     public void errorMusee(){
-        Snackbar.make(findViewById(android.R.id.content), "Error Loading", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(android.R.id.content), "Error Loading Museum", Snackbar.LENGTH_LONG).show();
         finish();
     }
 
@@ -145,8 +145,8 @@ public class MuseeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 List<String> museePics = response.body();
-                for(String pic : museePics){
-                    load_picture(pic, museeId);
+                for(String pic_url : museePics){
+                    load_picture(pic_url, museeId);
                 }
 
             }
@@ -157,18 +157,18 @@ public class MuseeActivity extends AppCompatActivity {
         });
     }
 
-    public void load_picture(String src, String museum_id) {
+    public void load_picture(String pic_url, String museum_id) {
         try {
-            URL url = new URL(src);
-            MuseeImage museeImage = database.getImage(src);
+            URL url = new URL(pic_url);
+            MuseeImage museeImage = database.getImage(pic_url);
 
-            if (museeImage != null) {
-                Log.e("Good", "image exists");
+            if (museeImage != null) {Log.e("Good", "image exists");
+
                 display_picture(museeImage);
             } else {
                 Picasso.get()
-                        .load(src)
-                        .into(new ImageDownloader(src, museum_id, database));
+                        .load(pic_url)
+                        .into(new ImageDownloader(pic_url, museum_id, database));
             }
         } catch (Exception e) {
             e.printStackTrace();

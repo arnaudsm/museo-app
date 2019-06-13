@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,11 +36,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnMuseeListener {
 
     private Class<?> mClss;
     private static com.epf.museo.database.database database;
     private List<Musee> musees;
+
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private List<Musee> listData = new ArrayList<Musee>();
 
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -73,14 +82,13 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         // create views
-        FloatingActionButton fabscan = findViewById(R.id.scan_button);
-        Button listmuseebutton = findViewById(R.id.afficher_list_musee_button);
-
-        // now set the View with OnClickListener
-
-        fabscan.setOnClickListener(new ClikMainActivity());
-        listmuseebutton.setOnClickListener(new ClikMainActivity());
-
+        FloatingActionButton fab = findViewById(R.id.scan_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity(ScannerActivity.class);
+            }
+        });
 
 
         // Action Bar
@@ -100,32 +108,36 @@ public class MainActivity extends AppCompatActivity{
 
     protected void update_list(){
         musees = database.getItems();
-        TextView text_empty = (TextView) findViewById(R.id.text_empty);
-        if(musees.size() == 0) {
-            text_empty.setVisibility(View.VISIBLE);
-        } else {
-            text_empty.setVisibility(View.VISIBLE);
-            text_empty.setText(musees.size()+" Museums already scanned");
-        }
+
+        loadRecyclerView();
+
     }
 
-    public class ClikMainActivity implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
 
-            switch (v.getId()) {
-                case R.id.afficher_list_musee_button:
-                    Toast.makeText(getApplicationContext(), "Ouverture de la liste des musées", Toast.LENGTH_LONG).show();
-                    launchActivity(ListMuseeActivity.class);
-                    break;
+    private void loadRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter =  new RecyclerViewAdapter(listData, this, database);
+        recyclerView.setAdapter(adapter);
 
-                case R.id.scan_button:
-                    Toast.makeText(getApplicationContext(), "Ouverture du scanner", Toast.LENGTH_LONG).show();
-                    launchActivity(ScannerActivity.class);
-                    break;
 
-                default:
-            }
+        for (Musee musee: musees) {
+            listData.add(musee);
         }
+
+
     }
+
+    @Override
+    public void onMuseeClick(int position) {
+        Musee musee = listData.get(position);
+        Intent intent = new Intent(this, MuseeActivity.class);
+        intent.putExtra("result", musee.getId());
+        startActivity(intent);
+    }
+
+
+
 }

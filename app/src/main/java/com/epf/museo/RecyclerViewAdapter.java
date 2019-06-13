@@ -1,5 +1,7 @@
 package com.epf.museo;
 
+import android.arch.persistence.room.Room;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.epf.museo.database.MuseumDatabase;
 import com.epf.museo.models.Musee;
+import com.epf.museo.models.MuseeImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +21,19 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     public ImageView imageView;
     public TextView txtDescription;
+    public TextView city;
     RecyclerViewAdapter.OnMuseeListener onMuseeListener;
+
 
 
     public RecyclerViewHolder(@NonNull View itemView, RecyclerViewAdapter.OnMuseeListener onMuseeListener) {
         super(itemView);
         imageView = (ImageView)itemView.findViewById(R.id.imageView);
         txtDescription = (TextView)itemView.findViewById(R.id.txtDescription);
+        city = (TextView)itemView.findViewById(R.id.city);
+
         this.onMuseeListener = onMuseeListener;
+
 
         itemView.setOnClickListener(this);
     }
@@ -37,13 +46,16 @@ class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
 
-    private List<Data> listData = new ArrayList<Data>();
+    private List<Musee> listData = new ArrayList<Musee>();
     private OnMuseeListener mOnMuseeListener;
+    private static com.epf.museo.database.database database;
 
 
-    public RecyclerViewAdapter(List<Data> listData, OnMuseeListener onMuseeListener) {
+    public RecyclerViewAdapter(List<Musee> listData, OnMuseeListener onMuseeListener, com.epf.museo.database.database database) {
         this.listData = listData;
         this.mOnMuseeListener = onMuseeListener;
+
+        this.database = database;
     }
 
     @NonNull
@@ -56,8 +68,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        holder.imageView.setImageResource(listData.get(position).getImageID());
-        holder.txtDescription.setText(listData.get(position).getDescription());
+        holder.txtDescription.setText(listData.get(position).getNom());
+        holder.city.setText(listData.get(position).getVille());
+
+        Bitmap image = database.getMuseumImage(listData.get(position).getId()).getImage();
+        holder.imageView.setImageBitmap(image);
     }
 
     @Override

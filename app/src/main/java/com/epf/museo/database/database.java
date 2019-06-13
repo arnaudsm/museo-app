@@ -22,8 +22,11 @@ public interface database {
     @Query("SELECT * FROM musees")
     public List<Musee> getItems();
 
-    @Query("SELECT * FROM images where musee_id = :id")
-    public List<MuseeImage> getMuseumImages(String id);
+    @Query("SELECT * FROM images where musee_id = :musee_id")
+    public List<MuseeImage> getMuseumImages(String musee_id);
+
+    @Query("SELECT * FROM images where musee_id = :musee_id limit 1")
+    public MuseeImage getMuseumImage(String musee_id);
 
     @Query("SELECT * FROM images where url= :url")
     public MuseeImage getImage(String url);
