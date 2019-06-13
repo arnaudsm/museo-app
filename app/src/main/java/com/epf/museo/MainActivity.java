@@ -110,9 +110,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         musees = database.getItems();
 
         loadRecyclerView();
-
     }
-
 
     private void loadRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
@@ -122,12 +120,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         adapter =  new RecyclerViewAdapter(listData, this, database);
         recyclerView.setAdapter(adapter);
 
-
         for (Musee musee: musees) {
             listData.add(musee);
         }
-
-
     }
 
     @Override
@@ -137,7 +132,5 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         intent.putExtra("result", musee.getId());
         startActivity(intent);
     }
-
-
 
 }
