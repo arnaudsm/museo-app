@@ -1,6 +1,5 @@
-package com.epf.museo;
+package com.epf.museo.adapter;
 
-import android.arch.persistence.room.Room;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.epf.museo.database.MuseumDatabase;
+import com.epf.museo.R;
 import com.epf.museo.models.Musee;
 import com.epf.museo.models.MuseeImage;
 
@@ -71,8 +70,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.txtDescription.setText(listData.get(position).getNom());
         holder.city.setText(listData.get(position).getVille());
 
-        Bitmap image = database.getMuseumImage(listData.get(position).getId()).getImage();
-        holder.imageView.setImageBitmap(image);
+        MuseeImage museeImage = database.getMuseumImage(listData.get(position).getId());
+        if (museeImage !=null) {
+            Bitmap image = museeImage.getImage();
+            holder.imageView.setImageBitmap(image);
+        }
     }
 
     @Override

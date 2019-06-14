@@ -11,30 +11,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.Manifest;
 import android.widget.Toast;
 
+import com.epf.museo.adapter.RecyclerViewAdapter;
 import com.epf.museo.database.MuseumDatabase;
-import com.epf.museo.interfaces.ImageDownloader;
 import com.epf.museo.models.Musee;
-import com.epf.museo.models.MuseeImage;
-import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnMuseeListener {
 
@@ -47,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private RecyclerView.LayoutManager layoutManager;
 
     private List<Musee> listData = new ArrayList<Musee>();
+    private MuseumDatabase databaseBuilder;
 
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -98,26 +85,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         menu.setTitle("  " + getResources().getString(R.string.app_name));
 
         // BDD
-        MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
+        databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
         database = databaseBuilder.getDatabase();
-        update_list();
-    }
 
-    protected void update_list(){
         musees = database.getItems();
-
         loadRecyclerView();
     }
+
 
     private void loadRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        adapter =  new RecyclerViewAdapter(listData, this, database);
+        adapter =  new RecyclerViewAdapter(listData,    this, database);
         recyclerView.setAdapter(adapter);
 
         for (Musee musee: musees) {

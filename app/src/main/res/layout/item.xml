@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_weight="1"
-            android:background="@drawable/ic_museum"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
             android:scaleType="centerCrop" />
 
         <TextView

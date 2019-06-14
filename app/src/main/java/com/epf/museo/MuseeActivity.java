@@ -9,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Gallery;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import com.epf.museo.adapter.HorizontalAdapter;
 import com.epf.museo.database.MuseumDatabase;
 import com.epf.museo.database.database;
 import com.epf.museo.interfaces.ImageDownloader;
@@ -41,6 +45,11 @@ public class MuseeActivity extends AppCompatActivity {
     private static database database;
     private static Musee musee;
     private static ActionBar menu;
+    private List<MuseeImage> images;
+
+    private RecyclerView recyclerView;
+    private HorizontalAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -51,15 +60,15 @@ public class MuseeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String museeId = intent.getStringExtra("result");
 
+        images = new ArrayList<>();
         // Action Bar
         menu = getSupportActionBar();
         menu.setDisplayShowHomeEnabled(true);
         menu.setIcon(R.drawable.ic_museum_alone);
         menu.setTitle("  ");
 
-
-        FloatingActionButton fab = findViewById(R.id.map_button);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_map = findViewById(R.id.map_button);
+        fab_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q="+musee.getAdresse()+" - "+musee.getVille());
@@ -68,6 +77,22 @@ public class MuseeActivity extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });
+
+        FloatingActionButton fab_camera = findViewById(R.id.camera_button);
+        fab_camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // Camera Stuff
+            }
+        });
+
+        // Photos
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.photos);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter =  new HorizontalAdapter(images);
+        recyclerView.setAdapter(adapter);
 
         // BDD
         MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
@@ -100,10 +125,6 @@ public class MuseeActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.ouverture)).setText(musee.getPeriode_ouverture());
         ((TextView) findViewById(R.id.fermeture)).setText("Fermeture le "+musee.getFermeture_annuelle());
-
-
-
-
 
         chargerPhotos();
     }
@@ -175,39 +196,46 @@ public class MuseeActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(Call<List<String>> call, Throwable t) {
-
+                    load_photos(museeId);
                 }
             });
         }  catch (Exception e) {
-            List<MuseeImage> images = database.getMuseumImages(museeId);
-            Log.e("Good", "Images loaded:"+images.size());
-
-            for(MuseeImage image: images){
-                display_picture(image);
-            }
+            load_photos(museeId);
         }
+    }
+
+    private void load_photos(String museeId){
+        images = database.getMuseumImages(museeId);
+        adapter.notifyItemInserted(images.size());
     }
 
     public void download_picture(String pic_url, String museum_id) {
         try {
             URL url = new URL(pic_url);
-            MuseeImage museeImage = database.getImage(pic_url);
-
-            if (museeImage != null) {
-                Log.e("Good", "image exists");
-                display_picture(museeImage);
-            } else {
-                Picasso.get()
-                .load(pic_url)
-                .into(new ImageDownloader(pic_url, museum_id, database, this));
-            }
-        } catch (Exception e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
+        }
+        MuseeImage picture = database.getImage(pic_url);
+
+        if (picture!= null) {
+            Log.e("Good", "image exists");
+            display_picture(picture);
+        } else {
+            Picasso.get()
+                    .load(pic_url)
+                    .into(new ImageDownloader(pic_url, museum_id, database, this));
         }
     }
 
     public void display_picture(MuseeImage picture){
         Bitmap bitmap = picture.getImage();
         Log.e("Good", "Image Loaded");
+        images.add(picture);
+        adapter.notifyItemInserted(images.size());
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }
