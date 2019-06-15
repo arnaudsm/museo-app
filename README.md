@@ -9,6 +9,10 @@ Projet 4A EPF Android
 ## Scanner un Musée 
 ![Sample Video](demo/videos/scan.mp4)
 
+<video loop autoplay>
+  <source src="demo/videos/scan.mp4" type="video/mp4">
+</video>
+
 ## Consulter un Musée 
 ![Sample Video](demo/videos/fiche.mp4)
 
