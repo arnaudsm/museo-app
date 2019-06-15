@@ -3,7 +3,7 @@ Projet 4A EPF Android
 
 ## Authors
 - [Arnaud de Saint Meloir](https://arnaud.at/)
-- [Ferdinand DS](https://github.com/fduchet)
+- [Ferdinand  Ferdinand Duchet-Suchaux](https://github.com/fduchet)
 
 # Documentation
 
