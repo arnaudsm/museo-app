@@ -1,69 +1,49 @@
 # Museo
 Projet 4A EPF Android
 
-# Interface
-2 panneaux :
-- Scanner 
-- Musées (déjà scannés)
+## Authors
+- [Arnaud de Saint Meloir](https://arnaud.at/)
+- [Ferdinand DS](https://github.com/fduchet)
 
-# Help
-<https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android>
+# Documentation
+
+## Consulter les Musées
+La page d'accueil de l'application vous présente tous les Musées sauvés en mémoire.
+![Video](demo/videos/list_full.mp4)
+
+## Scanner un Musée 
+Appuyer sur l'icône de Scan pour Scanner le QR code d'un Musée.
+![Video](demo/videos/scan.mp4)
+
+## Consulter un Musée 
+Cliquer sur la carte d'un musée pour en visualiser les informations.
+![Video](demo/videos/fiche.mp4)
+
+## Ajouter une photo
+Cliquez sur l'icône Caméra pour ajouter une photo à un Musée.
+![Video](demo/videos/new_pic.mp4)
+
+
+## **Bonus** : Localiser le Musée
+Le bouton Carte permet de visualiser le Musée dans **Google Maps** pour s'y rendre. 
+![Video](demo/videos/map.mp4)
+
+
+# Example QR Codes
+![Code Invalide](/demo/qr/qr_arnaud.png)
+Code Invalide
+
+![Code Valide](/demo/qr/qr_musee.png)
+Code Valide
+
 
 # Todo
 - [x] Scanner un QR Code
 - [x] Vérifier si un QR Code est valide
 - [x] Vérifier si un musée est téléchargé
 - [x] Télécharger un musée en local
-- [ ] Afficher un musée
-- [ ] Télécharger et visualiser les photos associées à un musée
-- [ ] Ajouter des photos à la fiche d’un musée,
-- [ ] Lister les musées téléchagés dans l'onglet principal
-- [ ] Documentation utilisateur
-
-# Example QR Codes
-![Code Invalide](/demo/qr_arnaud.png)
-Code Invalide
-
-![Code Valide](/demo/qr_musee.png)
-Code Valide
-
-
-# Authors
-- [Arnaud de Saint Meloir](https://arnaud.at/) 
-- [Ferdinand DS](https://github.com/fduchet)
-
-# Sujet
-Votre objectif est de réaliser une application mobile sur la plate-forme Android.
-
-Cette application doit permettre à son utilisateur de :
-- Scanner un QRCode et visualiser une fiche desciptive du musée correspondant,
-- Visualiser les photos associées à un musée,
-- Ajouter des photos à la fiche d’un musée,
-- Garder sur le téléphone les données des musées déjà scannés,
-- Visualiser les musées déjà scannés sans avoir une connexion à Internet.
-
-
-Les données concernant les musées sont accessibles via l'API Rest suivante :
-
-<http://vps449928.ovh.net/swagger-ui.html>
-
-## Exemples de requêtes :
-
--   Fiche d'un musée : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b>
-
--   Liste des photos d'un musée : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b/pictures>
-
--   Télécharger une photo : <http://vps449928.ovh.net/api/musees/5c637e3c61e55c808b31e1ae12a57fc5c4842b4b/pictures/2.jpeg>
-
-## Contraintes
-
--   Vous devez réaliser ce projet en binôme.
--   Vous devez fournir le code source de l'application et une documentation utilisateur.
-
-## Liens utiles
-
--   Android Developers : [https://developer.android.com](https://developer.android.com/)
--   QRCode (bibliothèque Android): <https://github.com/dm77/barcodescanner>
--   QRCode (générateur) : <https://fr.qr-code-generator.com/>
--   Retrofit : <https://square.github.io/retrofit/>
--   Glide : <https://bumptech.github.io/glide/>
+- [x] Afficher un musée
+- [x] Télécharger et visualiser les photos associées à un musée
+- [x] Ajouter des photos à la fiche d’un musée,
+- [x] Lister les musées téléchagés dans l'onglet principal
+- [x] Documentation utilisateur

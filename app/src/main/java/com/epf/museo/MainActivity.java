@@ -4,40 +4,39 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
 import android.Manifest;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.epf.museo.adapter.RecyclerViewAdapter;
 import com.epf.museo.database.MuseumDatabase;
-import com.epf.museo.interfaces.ImageDownloader;
 import com.epf.museo.models.Musee;
-import com.epf.museo.models.MuseeImage;
-import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnMuseeListener {
 
     private Class<?> mClss;
     private static com.epf.museo.database.database database;
     private List<Musee> musees;
 
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+    private List<Musee> listData = new ArrayList<Musee>();
+    private MuseumDatabase databaseBuilder;
 
     public void launchActivity(Class<?> clss) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 } else {
-                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.qr_permission, Toast.LENGTH_SHORT).show();
                 }
                 return;
         }
@@ -72,14 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Action Bar
-        ActionBar menu = getSupportActionBar();
-        menu.setDisplayShowHomeEnabled(true);
-        menu.setIcon(R.drawable.ic_museum_alone);
-        menu.setTitle("  " + getResources().getString(R.string.app_name));
-
-
-
+        // create views
         FloatingActionButton fab = findViewById(R.id.scan_button);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,24 +80,54 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Action Bar
+        ActionBar menu = getSupportActionBar();
+        menu.setDisplayShowHomeEnabled(true);
+        menu.setIcon(R.drawable.ic_museum_alone);
+        menu.setTitle("  " + getResources().getString(R.string.app_name));
+
         // BDD
-        MuseumDatabase databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
+        databaseBuilder = Room.databaseBuilder(this, MuseumDatabase .class, "mydb")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
         database = databaseBuilder.getDatabase();
-        update_list();
+
+        musees = database.getItems();
+        loadRecyclerView();
     }
 
-    protected void update_list(){
-        musees = database.getItems();
-        TextView text_empty = (TextView) findViewById(R.id.text_empty);
-        if(musees.size() == 0) {
-            text_empty.setVisibility(View.VISIBLE);
-        } else {
-            text_empty.setVisibility(View.VISIBLE);
-            text_empty.setText(musees.size()+" Museums already scanned");
+
+    private void loadRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter =  new RecyclerViewAdapter(listData,    this, database);
+        recyclerView.setAdapter(adapter);
+
+        if (musees.size() >0) {
+            for (Musee musee: musees) {
+                listData.add(musee);
+            }
+        }else {
+            TextView textView = new TextView(this);
+            textView.setText("No Museums Stored");
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
+            textView.setPadding(24,24,24,24);
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.container);
+            layout.addView(textView);
         }
+    }
+
+    @Override
+    public void onMuseeClick(int position) {
+        Musee musee = listData.get(position);
+        Intent intent = new Intent(this, MuseeActivity.class);
+        intent.putExtra("result", musee.getId());
+        startActivity(intent);
     }
 
 }
