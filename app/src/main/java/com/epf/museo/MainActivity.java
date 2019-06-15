@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -11,8 +12,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.Manifest;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.epf.museo.adapter.RecyclerViewAdapter;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         startActivity(intent);
                     }
                 } else {
-                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.qr_permission, Toast.LENGTH_SHORT).show();
                 }
                 return;
         }
@@ -104,8 +107,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         adapter =  new RecyclerViewAdapter(listData,    this, database);
         recyclerView.setAdapter(adapter);
 
-        for (Musee musee: musees) {
-            listData.add(musee);
+        if (musees.size() >0) {
+            for (Musee musee: musees) {
+                listData.add(musee);
+            }
+        }else {
+            TextView textView = new TextView(this);
+            textView.setText("No Museums Stored");
+            textView.setGravity(Gravity.CENTER);
+            textView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
+            textView.setPadding(24,24,24,24);
+            ConstraintLayout layout = (ConstraintLayout) findViewById(R.id.container);
+            layout.addView(textView);
         }
     }
 

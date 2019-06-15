@@ -146,30 +146,29 @@ public class MuseeActivity extends AppCompatActivity {
             posterPhotos();
 
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
-            Toast.makeText(this, "Impossible d'uploader la photo prise", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.upload_error , Toast.LENGTH_LONG).show();
         }
     }
 
     public void errorMusee(){
-        Snackbar.make(findViewById(android.R.id.content), "Error Loading Museum", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(android.R.id.content), R.string.error_loading_museum, Snackbar.LENGTH_LONG).show();
         finish();
     }
 
     public void afficherMusee() {
-        Snackbar.make(findViewById(android.R.id.content), "Museum Loaded", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(android.R.id.content), R.string.museum_loaded, Snackbar.LENGTH_LONG).show();
 
         menu.setTitle(" "+musee.getNom());
 
         ((TextView) findViewById(R.id.ouverture)).setText(musee.getPeriode_ouverture());
-        ((TextView) findViewById(R.id.fermeture)).setText("Fermeture le "+musee.getFermeture_annuelle());
+        ((TextView) findViewById(R.id.fermeture)).setText(R.string.closing + musee.getFermeture_annuelle());
 
         chargerPhotos();
     }
 
     public void saveMusee(){
         database.insert(musee);
-        Snackbar.make(findViewById(android.R.id.content), "Museum Saved", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(android.R.id.content), R.string.museum_saved, Snackbar.LENGTH_LONG).show();
     }
 
     public void chargerMusee(String museeId) throws IOException {
@@ -286,7 +285,6 @@ public class MuseeActivity extends AppCompatActivity {
         MuseeImage picture = database.getImage(pic_url);
 
         if (picture!= null) {
-            Log.e("Good", "image exists");
             display_picture(picture);
         } else {
             Picasso.get()
@@ -297,7 +295,6 @@ public class MuseeActivity extends AppCompatActivity {
 
     public void display_picture(MuseeImage picture){
         Bitmap bitmap = picture.getImage();
-        Log.e("Good", "Image Loaded");
         images.add(picture);
         adapter.notifyItemInserted(images.size());
     }
