@@ -7,8 +7,21 @@ Projet 4A EPF Android
 
 # Documentation
 ## Scanner un Musée 
+![Sample Video](demo/videos/scan.mp4)
 
-<img src="https://i.imgur.com/rro9Ei3.gif" width="200">
+## Consulter un Musée 
+![Sample Video](demo/videos/fiche.mp4)
+
+
+## Ajouter une photo
+![Sample Video](demo/videos/new_pic.mp4)
+
+## Consulter les Musées
+![Sample Video](demo/videos/list_full.mp4)
+
+
+## Bonus : Localiser le Musée
+![Sample Video](demo/videos/map.mp4)
 
 
 # Todo
