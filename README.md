@@ -6,8 +6,9 @@ Projet 4A EPF Android
 - [Ferdinand DS](https://github.com/fduchet)
 
 # Documentation
-## Scanner un Musée
-![Scanner](/demo/video/scan.mp4)
+## Scanner un Musée 
+
+<img src="https://i.imgur.com/rro9Ei3.gif" width="200">
 
 
 # Todo
