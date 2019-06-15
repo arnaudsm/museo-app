@@ -1,10 +1,14 @@
 package com.epf.museo;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -17,7 +21,11 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +43,7 @@ import com.epf.museo.database.database;
 import com.epf.museo.interfaces.ImageDownloader;
 import com.epf.museo.models.Musee;
 import com.epf.museo.models.MuseeImage;
+import com.epf.museo.models.MuseePhoto;
 import com.squareup.picasso.Picasso;
 
 public class MuseeActivity extends AppCompatActivity {
@@ -46,10 +55,14 @@ public class MuseeActivity extends AppCompatActivity {
     private static Musee musee;
     private static ActionBar menu;
     private List<MuseeImage> images;
+    private File filePhoto;
+    private MuseePhoto museePhoto;
 
     private RecyclerView recyclerView;
     private HorizontalAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    Context context;
 
 
     @Override
@@ -78,11 +91,13 @@ public class MuseeActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab_camera = findViewById(R.id.camera_button);
+        FloatingActionButton fab_camera = findViewById(R.id.buttonCamera);
         fab_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                // Camera Stuff
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 0);
             }
         });
 
@@ -112,6 +127,83 @@ public class MuseeActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Bitmap bitmapPhoto = (Bitmap) data.getExtras().get("data");
+
+        persistImage(bitmapPhoto);
+        // new fileFromBitmap(bitmapPhoto, getApplicationContext()).execute();
+    }
+
+    private void persistImage(Bitmap bitmap) {
+
+        File filePhoto = new File(this.getCacheDir(), "temporary_file.jpg");
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(filePhoto);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+
+            museePhoto.setFilePhoto(filePhoto);
+            posterPhotos();
+
+        } catch (Exception e) {
+            Log.e(MuseeActivity.class.getSimpleName(), "Error writing bitmap", e);
+        }
+
+
+    }
+
+/*    public class fileFromBitmap extends AsyncTask< Void, Integer, String> {
+
+        Context context;
+        Bitmap bitmap;
+        // String path_externam = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
+
+        public fileFromBitmap(Bitmap bitmap, Context context){
+            this.bitmap=bitmap;
+            this.context=context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            // file = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+            filePhoto = new File(context.getCacheDir(), "temporary_file.jpg");
+            try {
+                FileOutputStream fo = new FileOutputStream(filePhoto);
+                fo.write(bytes.toByteArray());
+                fo.flush();
+                fo.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            // Use the file here
+            Log.d(TAG, "voici le chemin d'accès à la photo prise : "+filePhoto.getAbsolutePath());
+            // le chemin est : /data/user/0/fr.epf.min.takepictures/cache/temporary_file.jpg
+            museePhoto.setFilePhoto(filePhoto);
+            posterPhotos();
+        }
+
+    }*/
 
     public void errorMusee(){
         Snackbar.make(findViewById(android.R.id.content), "Error Loading Museum", Snackbar.LENGTH_LONG).show();
@@ -202,6 +294,38 @@ public class MuseeActivity extends AppCompatActivity {
         }  catch (Exception e) {
             load_photos(museeId);
         }
+    }
+
+    private void posterPhotos(){
+        final String museeId = musee.getId();
+        final File filePhotoPost = museePhoto.getFilePhoto();
+
+        //1 - déclaration de Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://vps449928.ovh.net/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //2 - Récupérer une instance de Retrofit et récupération de la liste des endpoints de l'interface MuseeControllerService
+        MuseeControllerService museeControllerService = retrofit.create(MuseeControllerService.class);
+
+        //3 - Création de l'appel Call de notre EndPoint getMusee
+        Call<String> call = museeControllerService.postMuseePics(filePhotoPost, museeId);
+
+        //4 - démarrage de l'appel
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "resultat envoie de la photo situé en : " + filePhotoPost.getAbsolutePath()+" OK");
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "resultat envoie de la photo situé en : " + filePhotoPost.getAbsolutePath()+" ERROR");
+            }
+        });
+
+
     }
 
     private void load_photos(String museeId){
