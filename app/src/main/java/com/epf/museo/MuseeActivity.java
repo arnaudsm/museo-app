@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -61,9 +62,6 @@ public class MuseeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private HorizontalAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-
-    Context context;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,76 +132,24 @@ public class MuseeActivity extends AppCompatActivity {
 
         Bitmap bitmapPhoto = (Bitmap) data.getExtras().get("data");
 
-        persistImage(bitmapPhoto);
-        // new fileFromBitmap(bitmapPhoto, getApplicationContext()).execute();
-    }
-
-    private void persistImage(Bitmap bitmap) {
-
         File filePhoto = new File(this.getCacheDir(), "temporary_file.jpg");
 
         OutputStream os;
         try {
             os = new FileOutputStream(filePhoto);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            bitmapPhoto.compress(Bitmap.CompressFormat.JPEG, 100, os);
             os.flush();
             os.close();
 
             museePhoto.setFilePhoto(filePhoto);
+
             posterPhotos();
 
         } catch (Exception e) {
-            Log.e(MuseeActivity.class.getSimpleName(), "Error writing bitmap", e);
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+            Toast.makeText(this, "Impossible d'uploader la photo prise", Toast.LENGTH_LONG).show();
         }
-
-
     }
-
-/*    public class fileFromBitmap extends AsyncTask< Void, Integer, String> {
-
-        Context context;
-        Bitmap bitmap;
-        // String path_externam = Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg";
-
-        public fileFromBitmap(Bitmap bitmap, Context context){
-            this.bitmap=bitmap;
-            this.context=context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-            // file = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
-            filePhoto = new File(context.getCacheDir(), "temporary_file.jpg");
-            try {
-                FileOutputStream fo = new FileOutputStream(filePhoto);
-                fo.write(bytes.toByteArray());
-                fo.flush();
-                fo.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            // Use the file here
-            Log.d(TAG, "voici le chemin d'accès à la photo prise : "+filePhoto.getAbsolutePath());
-            // le chemin est : /data/user/0/fr.epf.min.takepictures/cache/temporary_file.jpg
-            museePhoto.setFilePhoto(filePhoto);
-            posterPhotos();
-        }
-
-    }*/
 
     public void errorMusee(){
         Snackbar.make(findViewById(android.R.id.content), "Error Loading Museum", Snackbar.LENGTH_LONG).show();
@@ -324,8 +270,6 @@ public class MuseeActivity extends AppCompatActivity {
                 Log.d(TAG, "resultat envoie de la photo situé en : " + filePhotoPost.getAbsolutePath()+" ERROR");
             }
         });
-
-
     }
 
     private void load_photos(String museeId){

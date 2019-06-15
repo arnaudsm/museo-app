@@ -24,5 +24,7 @@ public interface MuseeControllerService {
     @POST("api/musees/{id}/pictures")
     Call<String> postMuseePics(@Path("file")File file, @Path("id") String id);
 
+
+
 }
 
