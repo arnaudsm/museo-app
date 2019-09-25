@@ -2,10 +2,10 @@
 Visualize your favorite museums and learn more with QR codes in exhibitions.
 
 # Example QR Codes
-![Code Invalide](/demo/qr_arnaud.png)
+![Code Invalide](/demo/qr/qr_arnaud.png)
 Invalid Code
 
-![Code Valide](/demo/qr_musee.png)
+![Code Valide](/demo/qr/qr_musee.png)
 Valid Code
 
 ## Authors
