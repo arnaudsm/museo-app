@@ -1,6 +1,11 @@
 # Museo - Student Project
 Visualize your favorite museums and learn more with QR codes in exhibitions.
 
+# Are you looking for a Software Engineer ? 
+- I'm looking for a **Master Internship** in **2020** in **North America** !
+- Please check out my [Resume.](https://arnaud.at/cv)
+
+
 # Documentation
 
 ## See Museums
